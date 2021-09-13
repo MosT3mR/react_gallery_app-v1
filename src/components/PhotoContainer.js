@@ -1,24 +1,37 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { withRouter } from "react-router";
 import Photo from './Photo'
 import NoPhoto from './NoPhoto'
 
-const PhotoContainer = ({photos}) => {
- let showPhoto
-
- if(photos.length > 0){
-  showPhoto = photos.map(photo => <Photo key={photo.id} photo={photo} />)
- } else {
-  showPhoto = <NoPhoto />
+class PhotoContainer extends Component {
+ componentDidMount(){
+  // holllyyyy .... i know how to get the pramas in arrow functions , but finding how to do it in class's !! the more you know Othman
+  const query = this.props.match.params.topic;
+  if(query){
+   this.props.photoSearch(query)
+  }
  }
 
- return (
-  <div className="photo-container">
-   <h2>Results</h2>
-   <ul>
-    {showPhoto}
-   </ul>
-  </div>
- )
+ render(){
+
+  // making some loginc for when there is no results 
+  let showPhoto
+  
+  if(this.props.photos.length > 0){
+   showPhoto = this.props.photos.map(photo => <Photo key={photo.id} photo={photo} />)
+  } else {
+   showPhoto = <NoPhoto />
+  }
+ 
+  return (
+   <div className="photo-container">
+    <h2>Results</h2>
+    <ul>
+     {showPhoto}
+    </ul>
+   </div>
+  )
+ }
 }
 
-export default PhotoContainer
+export default withRouter(PhotoContainer)

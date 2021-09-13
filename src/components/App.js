@@ -1,4 +1,10 @@
 import React, { Component } from 'react';
+import {
+  BrowserRouter,
+  Redirect,
+  Route,
+  Switch
+} from 'react-router-dom';
 
 // Config.js
 import apiKey from './config'
@@ -13,28 +19,77 @@ export default class App extends Component {
     super()
     this.state = {
       photos: [],
+      cats: [],
+      dogs: [],
+      computer:[],
       loading: true
     }
   }
 
+  // Storing the 3 pages in states
   componentDidMount(){
-    this.photoSearch()
+    this.defultPhotos('cats')
+    this.defultPhotos('dogs')
+    this.defultPhotos('computer')
   }
 
-  photoSearch = (query = 'cats') => {
+  photoSearch = (query) => {
     fetch(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&page=1&format=json&nojsoncallback=1`)
     .then(res => res.json())
-    .then((data) => {this.setState({photos: data.photos.photo})})
+    .then((data) => {this.setState({photos: data.photos.photo,loading: false})})
   }
 
+
+  defultPhotos = (query) => {
+    fetch(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&page=1&format=json&nojsoncallback=1`)
+    .then(res => res.json())
+    .then((data) => {
+      if(query === 'cats'){
+        this.setState({
+          cats: data.photos.photo
+        })
+      }
+      if(query === 'dogs'){
+        this.setState({
+          dogs: data.photos.photo
+        })
+      }
+      if(query === 'computer'){
+        this.setState({
+          computer: data.photos.photo
+        })
+      }
+    })
+  }
+
+
   render() {
-    console.log(this.state.photos)
     return (
-      <div className="container">
-        <SearchForm onSearch={this.photoSearch} />
-        <Nav />
-        <PhotoContainer photos={this.state.photos} />
-      </div>
+      <BrowserRouter>
+        <div className="container">
+          <SearchForm onSearch={this.photoSearch} />
+          <Nav />
+          <Switch>
+            <Route exact path="/" render={() => <Redirect to="/search/cats" />} />
+            <Route exact path={`/search/:topic`} render={ () =>
+             <PhotoContainer photoSearch={this.photoSearch}
+              photos={this.state.photos} />}
+             />
+            <Route exact path="/cats" render={ () =>
+             <PhotoContainer photoSearch={this.photoSearch}
+              photos={this.state.cats} />}
+             />
+            <Route exact path="/dogs" render={ () =>
+             <PhotoContainer photoSearch={this.photoSearch}
+              photos={this.state.dogs} />}
+             />
+            <Route exact path="/computer" render={ () =>
+             <PhotoContainer photoSearch={this.photoSearch}
+              photos={this.state.computer} />}
+             />
+          </Switch>
+        </div>
+      </BrowserRouter>
     )
   }
 }
