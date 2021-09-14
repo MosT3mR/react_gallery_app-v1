@@ -21,8 +21,7 @@ export default class App extends Component {
       photos: [],
       cats: [],
       dogs: [],
-      computer:[],
-      loading: true
+      computer:[]
     }
   }
 
@@ -70,7 +69,7 @@ export default class App extends Component {
           <SearchForm onSearch={this.photoSearch} />
           <Nav />
           <Switch>
-            <Route exact path="/" render={() => <Redirect to="/search/cats" />} />
+            <Route exact path="/" render={() => <Redirect to="/cats" />} />
             <Route exact path={`/search/:topic`} render={ () =>
              <PhotoContainer photoSearch={this.photoSearch}
               photos={this.state.photos} />}
