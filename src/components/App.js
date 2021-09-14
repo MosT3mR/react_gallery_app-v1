@@ -21,7 +21,8 @@ export default class App extends Component {
       photos: [],
       cats: [],
       dogs: [],
-      computer:[]
+      computer:[],
+      lastQuery: ''
     }
   }
 
@@ -35,7 +36,7 @@ export default class App extends Component {
   photoSearch = (query) => {
     fetch(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&page=1&format=json&nojsoncallback=1`)
     .then(res => res.json())
-    .then((data) => {this.setState({photos: data.photos.photo,loading: false})})
+    .then((data) => {this.setState({photos: data.photos.photo,lastQuery: query})})
   }
 
 
@@ -72,7 +73,7 @@ export default class App extends Component {
             <Route exact path="/" render={() => <Redirect to="/cats" />} />
             <Route exact path={`/search/:topic`} render={ () =>
              <PhotoContainer photoSearch={this.photoSearch}
-              photos={this.state.photos} />}
+              photos={this.state.photos} lastQuery={this.state.lastQuery} />}
              />
             <Route exact path="/cats" render={ () =>
              <PhotoContainer photoSearch={this.photoSearch}

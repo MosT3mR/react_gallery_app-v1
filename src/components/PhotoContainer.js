@@ -14,6 +14,11 @@ class PhotoContainer extends Component {
 
  render(){
 
+  // making sure that the history works
+  if(this.props.match.params.topic !== this.props.lastQuery){
+   this.props.photoSearch(this.props.match.params.topic)
+  }
+
   // making some loginc for when there is no results 
   let showPhoto
   
@@ -25,7 +30,7 @@ class PhotoContainer extends Component {
  
   return (
    <div className="photo-container">
-    <h2>Results</h2>
+    <h2>{this.props.match.params.topic} Results</h2>
     <ul>
      {showPhoto}
     </ul>
